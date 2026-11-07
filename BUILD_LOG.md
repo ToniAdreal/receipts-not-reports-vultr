@@ -84,3 +84,46 @@ cd ~/workspace/vultr-agent-rush
   Vultr account/credit/deployment step (item 1), intentionally untouched in
   this round.
 - Exact LabLab form field limits are unverified (form is behind login).
+
+## 2026-11-07 ~03:31–03:40 PST — Round 2: public repo + submission assets
+
+- **Public GitHub repo: https://github.com/ToniAdreal/receipts-not-reports-vultr**
+  The first-choice name `receipts-not-reports` was already taken by the
+  user's own earlier Apart Research repo, so the `-vultr` suffix was used.
+  Repo created public under ToniAdreal, git identity set to
+  `ToniAdreal <184365500+ToniAdreal@users.noreply.github.com>`, project code
+  committed (`.venv`/`__pycache__` excluded via existing `.gitignore`) and
+  pushed to `main`. README gained a "Live demo" section with clearly marked
+  placeholders (demo URL, VM details) — no URL or deployment fact invented;
+  fill in after the Vultr VM deployment lands and is verified.
+- **Cover image** — `submission/cover.png` (1920×1080): programmatic title
+  band (no AI imagery) over a real screenshot of the running app's demo UI
+  (`submission/ui_run.png`, captured locally via headless Chromium after an
+  actual demo run: claims table with verified 2 / mismatch 1 / no_evidence 1
+  and both blocked containment rows visible).
+- **Slide deck** — `submission/slides.pptx` (7 slides, 16:9) + rendered
+  `submission/slides.pdf`: problem, solution, how it works, containment
+  moment, Vultr usage (VM + Serverless Inference adapter, live URL marked
+  as placeholder), demo results from the tested build (19 tests passing,
+  verdict counts verified 2 / mismatch 1 / no_evidence 1), team
+  (Toni Adreal + Jeremiah Ma). Slides were rendered and visually checked;
+  slide 7 layout fixed so no text is clipped or hidden behind the UI shot.
+- **Video script** — `submission/video_script.md`: timed ~2:45 script
+  mapped to on-screen UI actions, with the required containment moment
+  (sandbox refusing `read_secret` and `shell`; `network_fetch` called out
+  as refused by the same allowlist) at 0:55 and the tamper-and-reverify
+  catch at 2:00.
+- Submission assets were committed and pushed to the repo in this round
+  (under `submission/`).
+
+### Remaining TODO (unchanged from round 1, minus repo/assets)
+
+1. **Vultr VM deployment + Serverless Inference key** — handled separately
+   (account/$200 credit authorized by user). After it lands: replace the
+   README/slides/script demo-URL placeholders with the verified live URL.
+2. **Record the demo video** from `submission/video_script.md` (show the
+   containment moment and the tamper catch).
+3. **LabLab submission form** — handled separately; attach cover.png,
+   slides, video, repo URL, and the live demo URL; confirm both team
+   members (user + Ma Xudong) are on the project. Deadline
+   2026-11-08 15:00 PST.
