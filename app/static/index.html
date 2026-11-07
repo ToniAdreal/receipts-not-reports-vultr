@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Receipts, Not Reports — agent execution you can verify</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 960px; padding: 0 1rem; color: #111; }
+  h1 { margin-bottom: .2rem; } .sub { color: #555; margin-top: 0; }
+  button { padding: .55rem 1rem; margin-right: .5rem; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  td, th { border: 1px solid #ccc; padding: .4rem .6rem; text-align: left; font-size: .9rem; }
+  .verified { color: #0a7a2f; font-weight: 600; } .mismatch { color: #b35400; font-weight: 600; }
+  .no_evidence { color: #b00020; font-weight: 600; } .blocked { background: #fff3e0; }
+  code { font-size: .8rem; word-break: break-all; } .badge { background:#ffe9a8; padding:.1rem .4rem; border-radius:.3rem; }
+</style>
+</head>
+<body>
+<h1>Receipts, Not Reports</h1>
+<p class="sub">Don't trust what an agent says it did. Verify it against a tamper-evident receipt chain
+of what actually executed inside the sandbox. <span class="badge">Demo run uses clearly labelled DEMO data.</span></p>
+
+<button id="run">Run demo agent</button>
+<button id="tamper" disabled>Tamper with one receipt</button>
+<button id="reverify" disabled>Re-verify chain</button>
+<p id="narration"></p>
+<h2>Claims vs evidence</h2>
+<table id="claims"><thead><tr><th>Agent claim</th><th>Verdict</th><th>Detail</th></tr></thead><tbody></tbody></table>
+<h2>Receipt chain</h2>
+<p id="chainstatus"></p>
+<table id="chain"><thead><tr><th>#</th><th>Kind</th><th>Tool / detail</th><th>Hash</th></tr></thead><tbody></tbody></table>
+
+<script>
+let state = null;
+const $ = id => document.getElementById(id);
+function render(data) {
+  state = data;
+  $("narration").textContent = data.narration || "";
+  const ct = $("claims").querySelector("tbody"); ct.innerHTML = "";
+  for (const r of (data.verification?.results || [])) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td></td><td class="${r.verdict}">${r.verdict}</td><td></td>`;
+    tr.children[0].textContent = r.claim.text || JSON.stringify(r.claim);
+    tr.children[2].textContent = r.detail;
+    ct.appendChild(tr);
+  }
+  const ch = $("chain").querySelector("tbody"); ch.innerHTML = "";
+  for (const e of (data.events || [])) {
+    const tr = document.createElement("tr");
+    if (e.kind === "blocked_action") tr.className = "blocked";
+    const detail = e.payload.tool ? `${e.payload.tool} · ${e.payload.status || ""}` : e.kind;
+    tr.innerHTML = `<td>${e.seq}</td><td>${e.kind}</td><td></td><td><code>${e.hash.slice(0,16)}…</code></td>`;
+    tr.children[2].textContent = detail + (e.kind === "blocked_action" ? " — CONTAINMENT: execution refused" : "");
+    ch.appendChild(tr);
+  }
+  if (data.chain) $("chainstatus").textContent =
+    `Chain integrity: ${data.chain.valid ? "VALID" : "BROKEN — " + data.chain.reason} (${data.chain.checked} events checked)`;
+  $("tamper").disabled = $("reverify").disabled = !(data.events && data.events.length);
+}
+$("run").onclick = async () => {
+  $("narration").textContent = "Running agent inside sandbox…";
+  render(await (await fetch("/api/demo/run", {method: "POST"})).json());
+};
+$("tamper").onclick = () => {
+  const copy = JSON.parse(JSON.stringify(state));
+  const ev = copy.events.find(e => e.kind === "tool_call" && e.payload.output);
+  if (ev) ev.payload.output.total_amount = 999999;   // simulate a doctored log
+  state = copy;
+  $("chainstatus").textContent = "One receipt was edited locally. Re-verify to see what happens.";
+  render(copy);
+};
+$("reverify").onclick = async () => {
+  const out = await (await fetch("/api/verify", {method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({events: state.events, claims: state.claims || []})})).json();
+  state.chain = out.chain; state.verification = out.verification; render(state);
+};
+</script>
+</body>
+</html>

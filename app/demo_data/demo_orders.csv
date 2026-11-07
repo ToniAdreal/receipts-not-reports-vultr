@@ -1,0 +1,9 @@
+order_id,customer,item,amount
+DEMO-001,demo-alice,widget,120.50
+DEMO-002,demo-bob,gadget,89.99
+DEMO-003,demo-carol,widget,120.50
+DEMO-004,demo-dan,subscription,240.00
+DEMO-005,demo-erin,gadget,89.99
+DEMO-006,demo-frank,subscription,240.00
+DEMO-007,demo-grace,widget,120.50
+DEMO-008,demo-heidi,service,499.00
