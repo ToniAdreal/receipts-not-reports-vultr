@@ -127,3 +127,19 @@ cd ~/workspace/vultr-agent-rush
    slides, video, repo URL, and the live demo URL; confirm both team
    members (user + Ma Xudong) are on the project. Deadline
    2026-11-08 15:00 PST.
+
+## 2026-11-07 ~07:55–08:10 PST — Round 3: demo video recorded
+
+- **Demo video: `submission/demo_video.mp4` — 113.5s, 1920×1080, H.264 + AAC, 4.7MB** (ffprobe-verified; under the 3:00 limit). Six segments following `submission/video_script.md` (condensed VO to fit the pace): hook, run demo, containment moment (blocked `read_secret` + `shell` rows), false claims caught (mismatch 2520.48 vs 1520.48, no-evidence email claim), tamper + re-verify (chain flips to BROKEN: event hash mismatch), close on the cover end card.
+- **All visuals are the real running app**: headless Chromium (Playwright) drove the local FastAPI app at :8000 — idle UI, run, tamper, re-verify — and captured screenshots; no AI imagery, no mock UI. Narration is platform TTS (default voice) with burned-in subtitles (28 cues, timed to the audio).
+- **Verification**: 19 tests re-passed before recording; live smoke green; frames extracted at 0:08/0:30/0:55/1:25/1:40/1:50 and visually checked (containment rows highlighted, BROKEN status line legible, subtitles one line at the bottom).
+- **Notes / deviations**: edge-tts (Microsoft) failed — the egress proxy blocks its TLS endpoint (SSL WRONG_VERSION_NUMBER) — so narration used the platform `/opt/hatch/bin/tts` CLI instead. The tamper VO is worded to what the UI actually shows ("status flips to broken: event hash mismatch") rather than claiming the UI names the exact event number, which it does not. The local server was stopped after capture. `.venv` gained `edge-tts` + `pillow` (build tooling only, not app deps).
+- **Still open (not this round)**: Vultr VM deployment (blocked on the $200 coupon pool), replacing the demo-URL placeholder in README/slides, LabLab form submission. Deadline 2026-11-08 15:00 PST.
+
+## 2026-11-07 ~08:24–08:30 PST — Round 4: fallback deployment (user decision)
+
+- **User decision (08:24 PST):** if the $200 Vultr coupon pool stays empty, submit anyway with the demo hosted elsewhere, rather than abandoning the line. Coupon rechecks (every 30 min) continue; if credit lands before the deadline, Vultr VM deployment still proceeds and the demo URL gets swapped.
+- **Fallback deploy:** new Render Web Service "receipts-not-reports" in the user's workspace, created via the Public Git repository method (Render's GitHub app had no access to this repo; no GitHub permission change was made). Python 3, build `pip install -r requirements.txt`, start `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, Free tier, Oregon. First deploy of commit fbbacf8 went Live at 08:27:04 PST.
+- **Live URL:** https://receipts-not-reports.onrender.com — verified end to end in the browser: homepage title and Run demo agent button present; a full demo run rendered (5 tool steps, verdicts verified 2 / mismatch 1 / no_evidence 1, chain integrity VALID across 7 events including the blocked read_secret and shell receipts); `/api/health` returned ok. Free tier cold-starts (~50s) after idle.
+- **README** Live demo section now carries the real URL plus an honest hosting note (Vultr is the target; the credit pool was exhausted before our claim; fallback host until credit lands). No claim of a Vultr deployment that has not happened.
+- **Still open:** LabLab submission form (attach cover.png, slides.pdf, demo_video.mp4, repo URL, demo URL above). Deadline 2026-11-08 15:00 PST.

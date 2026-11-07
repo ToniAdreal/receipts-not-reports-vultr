@@ -14,10 +14,16 @@ list includes verification and safety.
 
 ## Live demo
 
-- **Demo URL:** `<!-- PLACEHOLDER: fill in after Vultr VM deployment -->`
-  (deployment on a Vultr Cloud Compute VM is in progress; no live URL is
-  claimed until it is verified working.)
-- **VM details:** `<!-- PLACEHOLDER: instance plan/region after deployment -->`
+- **Demo URL:** https://receipts-not-reports.onrender.com
+  (verified live 2026-11-07: homepage, full demo run, and `/api/health`
+  all checked end to end.)
+- **Hosting note:** the deployment target is a Vultr Cloud Compute VM
+  (see below). The event's $200 Vultr credit pool was exhausted before
+  our claim could be redeemed, so the live demo above currently runs on
+  a fallback host (Render free tier; it may cold-start for ~50 seconds
+  after idle). The app is a standard uvicorn service with no
+  Vultr-specific code paths, and the Vultr VM deployment proceeds
+  unchanged if credit lands before the submission deadline.
 
 ## How it works
 
